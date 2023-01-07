@@ -257,15 +257,7 @@ def playerTables(filter):
 def playerStatistics(playerGames, games):
     
     playerGames = playerGames[-games:]
-    
-    #teamiFPL['strength'] = teamiFPL.apply(lambda x: '{:.1}'.format(x['strength']), axis=1)
-    
-    #'{:,2}'.format(buyHold_start)
-    
-    
-    #df = elements.loc[(elements['team'] == team)]
-    #df = df.sort_values(by=['positionName', 'bps_per_90'], ascending=True)
-    
+       
     
     date = playerGames['Date'].tolist()
     opponent = playerGames['opponent'].tolist()
@@ -281,11 +273,7 @@ def playerStatistics(playerGames, games):
     ict_index = playerGames['ict_index'].tolist()
     
     
-    
-    
     head = ['Date', 'Opp', 'Min', 'Goals', 'Assists', 'Saves', 'Points', 'Bonus', 'Influence', 'Create', 'Threat', 'ICT']
-    
-    #count = len(name)
     
     fig22 = go.Figure(data=[go.Table(
         
@@ -303,26 +291,6 @@ def playerStatistics(playerGames, games):
     fig22.update_layout(height=(games*25), width=710, margin=dict(l=0, r=0, b=0,t=0))
     
     return fig22
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -883,6 +851,8 @@ premier, match = st.columns([1,4.5])
 
 image = Image.open('football_logo/football_logo.jpg')
 premier.image(image, use_column_width=True)
+
+st.markdown(" ")
 
 match.markdown("<h4 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Simulate Match<b></h4>", unsafe_allow_html=True)
 
