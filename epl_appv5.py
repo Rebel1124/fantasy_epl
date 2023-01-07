@@ -854,7 +854,6 @@ premier.image(image, use_column_width=True)
 
 st.markdown(" ")
 st.markdown(" ")
-st.markdown(" ")
 
 match.markdown("<h4 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Simulate Match<b></h4>", unsafe_allow_html=True)
 
