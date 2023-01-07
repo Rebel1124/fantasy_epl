@@ -59,7 +59,7 @@ teams = ['Arsenal',
 graph_options = ['Won', 'Draw', 'Lost', 'Goals For', 'Goals Against', 'Shots For', 'Shots Against', 'T-Shots For','T-Shots Against', 'Points']
 
 
-image = Image.open('football_logo/football_logo.jpg')
+image = Image.open('football_logo/Premier.png')
 
 colb, colc = st.columns([1, 4.5])
 colb.image(image, use_column_width=True)
@@ -879,12 +879,26 @@ if displayaway:
     st.sidebar.plotly_chart(awayline)
   
 ###############################################################################################################################################
-st.markdown("<h4 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Simulate Match<b></h4>", unsafe_allow_html=True)
+premier, match = st.columns([1,4.5])
+
+image = Image.open('football_logo/football_logo.jpg')
+premier.image(image, use_column_width=True)
+
+match.markdown("<h4 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Simulate Match<b></h4>", unsafe_allow_html=True)
+
+homelogo = 'football_logo/'+home+'.png'
+awaylogo = 'football_logo/'+away+'.png'
+
+homeImage = Image.open(homelogo)
+awayImage = Image.open(awaylogo)
+
 
 colq, colp = st.columns([1,1])
 
+colq.image(homeImage, width=200)
 colq.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>Team Strength - "+str(homescore)+"<b></h3>", unsafe_allow_html=True)
 
+colp.image(awayImage, width=200)
 colp.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>Team Strength - "+str(awayscore)+"<b></h3>", unsafe_allow_html=True)
 
 xgHome0= colq.number_input(home+' (Home Adjustment)', min_value=-5.0, max_value=5.0, step=0.1, value=0.0)
