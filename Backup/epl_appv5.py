@@ -58,8 +58,16 @@ teams = ['Arsenal',
 
 graph_options = ['Won', 'Draw', 'Lost', 'Goals For', 'Goals Against', 'Shots For', 'Shots Against', 'T-Shots For','T-Shots Against', 'Points']
 
-banner2 = Image.open('football_logo/banner2.jpg')
-st.image(banner2, width=707)
+
+image = Image.open('football_logo/Premier.png')
+
+colb, colc = st.columns([1, 4.5])
+colb.image(image, use_column_width=True)
+
+colc.markdown("<h1 style='text-align: center; color: #551A8B; padding-left: 0px; font-size: 50px'>English Premier League</h1>", unsafe_allow_html=True)
+
+st.markdown("<h2 style='text-align: center; color: 	#008080; padding-left: 0px; font-size: 50px'>Football Prediction App</h2>", unsafe_allow_html=True)
+
 st.markdown(" ")
     
 
@@ -88,20 +96,11 @@ def changeName(position):
         return 'c'
     else:
         return 'd'
+    
+    #return team
 
 
 elements['positionName'] = elements['position'].apply(changeName)
-
-def colorScale(x):
-    if (x == 'platin'):
-        return 'grey'
-    elif (cati == 'gold'):
-        return 'darkgoldenrod'
-    elif (cati == 'silver'):
-        return 'darkgrey'
-    else:
-        return 'burlywood'
-
 
 ## Simulate match using Poisson Distribution Model
 @st.cache(allow_output_mutation=True)
@@ -184,7 +183,7 @@ def tables(team, previousGames, targetTeam):
 def teamTables(teamiFPL):
     
     teamiFPL['strength'] = teamiFPL.apply(lambda x: round((x['strength']),2), axis=1)
-    
+       
     name = teamiFPL['web_name'].tolist()
     position = teamiFPL['position'].tolist()
     status = teamiFPL['statusFull'].tolist()
@@ -217,7 +216,8 @@ def teamTables(teamiFPL):
 
 @st.cache(allow_output_mutation=True)
 def playerTables(filter):
-      
+    
+    
     name = filter['web_name'].tolist()
     position = filter['position'].tolist()
     cost = filter['now_cost'].tolist()
@@ -230,7 +230,7 @@ def playerTables(filter):
     pts = filter['total_points'].tolist()
     bps = filter['bps'].tolist()
     ict_index = filter['ict_index'].tolist()
-    
+
     head = ['Name', 'Pos', 'Cost', 'Pick', 'Min', 'Goals', 'Assists', 'Saves', 'Form', 'Points', 'Bonus', 'ICT']
     
     count = len(name)
@@ -253,14 +253,11 @@ def playerTables(filter):
     return fig
 
 
-
-
 @st.cache(allow_output_mutation=True)
 def playerStatistics(playerGames, games):
     
     playerGames = playerGames[-games:]
-    
-    
+       
     
     date = playerGames['Date'].tolist()
     opponent = playerGames['opponent'].tolist()
@@ -275,8 +272,8 @@ def playerStatistics(playerGames, games):
     thr = playerGames['threat'].tolist()
     ict_index = playerGames['ict_index'].tolist()
     
-    head = ['Date', 'Opp', 'Min', 'Goals', 'Assists', 'Saves', 'Points', 'Bonus', 'Influence', 'Create', 'Threat', 'ICT']
     
+    head = ['Date', 'Opp', 'Min', 'Goals', 'Assists', 'Saves', 'Points', 'Bonus', 'Influence', 'Create', 'Threat', 'ICT']
     
     fig22 = go.Figure(data=[go.Table(
         
@@ -294,6 +291,7 @@ def playerStatistics(playerGames, games):
     fig22.update_layout(height=(games*25), width=710, margin=dict(l=0, r=0, b=0,t=0))
     
     return fig22
+
 
 
 @st.cache(allow_output_mutation=True)
@@ -450,16 +448,17 @@ def stats(homeTeam, target, games, graph, num):
     return graphs
 
 
+
 #Function to display FPL team data
 @st.cache(allow_output_mutation=True)
 def teamFpl(elements, team):
-    
+
     
     df = elements.loc[(elements['team'] == team)]
     df = df.sort_values(by=['positionName', 'bps_per_90'], ascending=True)
     
     df = df[['web_name', 'position', 'statusFull', 'strength', 'str-cat']]
-      
+    
     return df
 
 
@@ -467,6 +466,7 @@ def teamFpl(elements, team):
 @st.cache(allow_output_mutation=True)
 def Probability(rating1, rating2):
     return 1.0 * 1.0 / (1 + 1.0 * math.pow(10, 1.0 * (rating1 - rating2) / 400))
+
 
 
 # Function to get team lineups
@@ -490,10 +490,12 @@ def teamStrength(elements, team, line):
     df = df.sort_values(by=['minutes', 'strength'], ascending=False)
     df = df[['web_name', 'strength']]
     filter1 = df.loc[(df['web_name'].isin(line))]
-    
     score = filter1['strength'].sum()
     
     return score
+
+
+
 
 
 @st.cache(allow_output_mutation=True)
@@ -501,15 +503,19 @@ def filterElements(elements, team):
     
     df = elements.loc[(elements['team'] == team)]
     df = df.sort_values(by=['positionName'], ascending=True)
+    
     df = df[['web_name', 'position', 'now_cost', 'selected_by_percent', 'minutes', 'goals_scored', 'assists', 'saves', 'form', 
              'total_points', 'bps', 'ict_index']]
     return df
+
+
 
 
 @st.cache(allow_output_mutation=True)
 def filterPlayer(history, name):
     
     df = history.loc[(history['name'] == name)]
+    
     df = df[['Date', 'opponent', 'minutes', 'goals_scored', 'assists', 'saves', 'total_points', 'bps', 'influence', 'creativity', 'threat', 'ict_index']]
     return df
 
@@ -520,6 +526,7 @@ def filterNames(elements, team):
     
     df = elements.loc[(elements['team'] == team)]
     df = df.sort_values(by=['positionName'], ascending=True)
+
     playerNames = df['web_name'].unique()
     
     return playerNames
@@ -639,7 +646,8 @@ def statshead2head(Teams, teama, teamb, games, graph):
             else:
                 team2lost += 1
                 team2points += 0
-                             
+                
+                
     team1 = [team1won, team1draw, team1lost, team1goalsfor, team1goalsagainst, team1shotsfor,
              team1shotsagainst, team1shotsTargetfor, team1shotsTargetagainst, team1points]
     team2 = [team2won, team2draw, team2lost, team2goalsfor, team2goalsagainst, team2shotsfor,
@@ -691,499 +699,9 @@ def statshead2head(Teams, teama, teamb, games, graph):
     return graphs
 
 
-def playerRank(elements, category, model):
-    
-    if(model == 'zScore'):
-        df = elements.loc[(elements['str-cat'] == category)]
-    elif(model == 'kMeans'):
-        df = elements.loc[(elements['kMeans-cat'] == category)]
-    else:
-        df = elements.loc[(elements['pcaKMeans-cat'] == category)]
-       
-    df = df.sort_values(by=['strength'], ascending=False)
-    
-    df = df[['web_name', 'teamName', 'position', 'now_cost', 'form', 'points_per_game', 'bps_per_90', 'ict_index_per_90', 'value_season', 
-             'value_bps', 'ict_index_value', 'strength', 'str-cat', 'kMeans-cat', 'pcaKMeans-cat', 'description']]
-    return df
-
-
-@st.cache(allow_output_mutation=True)
-def playerRankTables(filter):
-   
-    
-    name = filter['web_name'].tolist()
-    team = filter['teamName'].tolist()
-    pos = filter['position'].tolist()
-    cost = filter['now_cost'].tolist()
-    form = filter['form'].tolist()
-    ppg = filter['points_per_game'].tolist()
-    bpspg = filter['bps_per_90'].tolist()
-    ictpg = filter['ict_index_per_90'].tolist()
-    ppc = filter['value_season'].tolist()
-    bpspc = filter['value_bps'].tolist()
-    ictpc = filter['ict_index_value'].tolist()
-    score1 = filter['strength'].tolist()
-    
-    score = []
-    
-    for i in score1:
-        score.append(round(float(i),2))
-    
-    
-    head = ['Name', 'Team', 'Pos', 'Cost', 'Form', 'Pts/Game', 'Bps/Game', 'ICT/Game', 'Pts/Cost', 'Bps/Cost', 'ICT/Cost', 'Score']
-    
-    count = len(name)
-    
-    fig = go.Figure(data=[go.Table(
-        
-        columnorder = [1,2,3,4,5,6,7,8,9,10,11,12],
-        columnwidth = [60,60,42,25,25,30,30,30,30,30,30,30],
-        
-        header=dict(values=head,
-                    fill_color='paleturquoise',
-                    align='left'),
-        cells=dict(values=[name, team, pos, cost, form, ppg, bpspg, ictpg, ppc, bpspc, ictpc, score],
-                   fill_color='lavender',
-                   align='left'))
-    ])   
-
-    fig.update_layout(height=(count*25), width=710, margin=dict(l=0, r=0, b=0,t=0))
-    
-    return fig
-
-
-@st.cache(allow_output_mutation=True)
-def playerScatter(data):
-
-    fig = go.Figure(data=go.Scatter(x=data['now_cost'],
-                                    y=data['strength'],
-                                    mode='markers',
-                                    marker_color=colors,
-                                    text=data['description'])) # hover text goes here
-
-    
-    fig.update_layout(
-    xaxis=dict(autorange=True, title_text='Cost', title_font={"size": 14}, tickfont={"size":10}),
-    yaxis=dict(autorange=True, title_text='Strength', title_font={"size": 14}, tickfont={"size":10}),
-    height=230,
-    width=630,
-    margin=dict(l=0, r=0, b=0,t=0),
-    plot_bgcolor='rgb(255,255,255)',
-    )
-    
-    
-    return fig
-
-
-@st.cache(allow_output_mutation=True)
-def playerScatterAll(data, model):   
-    
-    if (model == 'zScore'):
-        
-        x0 = data['now_cost'].loc[(data['str-cat'] == 'bronze')]
-        x1 = data['now_cost'].loc[(data['str-cat'] == 'silver')]
-        x2 = data['now_cost'].loc[(data['str-cat'] == 'gold')]
-        x3 = data['now_cost'].loc[(data['str-cat'] == 'platin')]
-        
-        y0 = data['strength'].loc[(data['str-cat'] == 'bronze')]
-        y1 = data['strength'].loc[(data['str-cat'] == 'silver')]
-        y2 = data['strength'].loc[(data['str-cat'] == 'gold')]
-        y3 = data['strength'].loc[(data['str-cat'] == 'platin')]
-        
-        d0 = data['description'].loc[(data['str-cat'] == 'bronze')]
-        d1 = data['description'].loc[(data['str-cat'] == 'silver')]
-        d2 = data['description'].loc[(data['str-cat'] == 'gold')]
-        d3 = data['description'].loc[(data['str-cat'] == 'platin')]
-        
-
-    elif (model == 'kMeans'):
-        
-        x0 = data['now_cost'].loc[(data['kMeans-cat'] == 'bronze')]
-        x1 = data['now_cost'].loc[(data['kMeans-cat'] == 'silver')]
-        x2 = data['now_cost'].loc[(data['kMeans-cat'] == 'gold')]
-        x3 = data['now_cost'].loc[(data['kMeans-cat'] == 'platin')]
-        
-        y0 = data['strength'].loc[(data['kMeans-cat'] == 'bronze')]
-        y1 = data['strength'].loc[(data['kMeans-cat'] == 'silver')]
-        y2 = data['strength'].loc[(data['kMeans-cat'] == 'gold')]
-        y3 = data['strength'].loc[(data['kMeans-cat'] == 'platin')]
-        
-        d0 = data['description'].loc[(data['kMeans-cat'] == 'bronze')]
-        d1 = data['description'].loc[(data['kMeans-cat'] == 'silver')]
-        d2 = data['description'].loc[(data['kMeans-cat'] == 'gold')]
-        d3 = data['description'].loc[(data['kMeans-cat'] == 'platin')]
-
-    else:
-        x0 = data['now_cost'].loc[(data['pcaKMeans-cat'] == 'bronze')]
-        x1 = data['now_cost'].loc[(data['pcaKMeans-cat'] == 'silver')]
-        x2 = data['now_cost'].loc[(data['pcaKMeans-cat'] == 'gold')]
-        x3 = data['now_cost'].loc[(data['pcaKMeans-cat'] == 'platin')]
-        
-        y0 = data['strength'].loc[(data['pcaKMeans-cat'] == 'bronze')]
-        y1 = data['strength'].loc[(data['pcaKMeans-cat'] == 'silver')]
-        y2 = data['strength'].loc[(data['pcaKMeans-cat'] == 'gold')]
-        y3 = data['strength'].loc[(data['pcaKMeans-cat'] == 'platin')]
-        
-        d0 = data['description'].loc[(data['pcaKMeans-cat'] == 'bronze')]
-        d1 = data['description'].loc[(data['pcaKMeans-cat'] == 'silver')]
-        d2 = data['description'].loc[(data['pcaKMeans-cat'] == 'gold')]
-        d3 = data['description'].loc[(data['pcaKMeans-cat'] == 'platin')]
-     
-        
-    fig = go.Figure()
-
-    # Add traces
-    fig.add_trace(go.Scatter(x=x0, y=y0,
-                        mode='markers',
-                        marker_color='burlywood',
-                        name='bronze',
-                        text=d0))
-    fig.add_trace(go.Scatter(x=x1, y=y1,
-                    mode='markers',
-                    marker_color='darkgrey',
-                    name='silver',
-                    text=d1))
-    
-    fig.add_trace(go.Scatter(x=x2, y=y2,
-                mode='markers',
-                marker_color='darkgoldenrod',
-                name='gold',
-                text=d2))
-
-    fig.add_trace(go.Scatter(x=x3, y=y3,
-                mode='markers',
-                marker_color='grey',
-                name='platin',
-                text=d3))
-    
-    fig.update_layout(
-    xaxis=dict(autorange=True, title_text='Cost', title_font={"size": 14}, tickfont={"size":10}),
-    yaxis=dict(autorange=True, title_text='Strength', title_font={"size": 14}, tickfont={"size":10}),
-    height=230,
-    width=630,
-    margin=dict(l=0, r=0, b=0,t=0),
-    plot_bgcolor='rgb(255,255,255)',
-    )
-    
-    
-    fig.update_layout(legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=-0.25,
-        xanchor="left",
-        x=-0.04
-    ))
-    
-    
-    return fig
-
-
-
-@st.cache(allow_output_mutation=True)
-def averageScatter(data, model):   
-    
-    
-    if (model == 'zScore'):
-        
-        Bronze = data.loc[(data['str-cat'] == 'bronze')]
-        BronzeCount = Bronze['strength'].count()
-        Bronzev1 = Bronze.loc[(data['strength'] > 0)]
-        BronzeAvg = round(Bronzev1['strength'].mean(),2)
-        BronzeCost = round(Bronzev1['now_cost'].mean(),2)
-
-        Silver = data.loc[(data['str-cat'] == 'silver')]
-        SilverCount = Silver['strength'].count()
-        SilverAvg = round(Silver['strength'].mean(),2)
-        SilverCost = round(Silver['now_cost'].mean(),2)
-        
-        Gold = data.loc[(data['str-cat'] == 'gold')]
-        GoldCount = Gold['strength'].count()
-        GoldAvg = round(Gold['strength'].mean(),2)
-        GoldCost = round(Gold['now_cost'].mean(),2)
-
-        Platin = data.loc[(data['str-cat'] == 'platin')]
-        PlatinCount = Platin['strength'].count()
-        PlatinAvg = round(Platin['strength'].mean(),2)
-        PlatinCost = round(Platin['now_cost'].mean(),2)
-
-
-    elif (model == 'kMeans'):
-        
-        Bronze = data.loc[(data['kMeans-cat'] == 'bronze')]
-        BronzeCount = Bronze['strength'].count()
-        Bronzev1 = Bronze.loc[(data['strength'] > 0)]
-        BronzeAvg = round(Bronzev1['strength'].mean(),2)
-        BronzeCost = round(Bronzev1['now_cost'].mean(),2)
-
-        Silver = data.loc[(data['kMeans-cat'] == 'silver')]
-        SilverCount = Silver['strength'].count()
-        SilverAvg = round(Silver['strength'].mean(),2)
-        SilverCost = round(Silver['now_cost'].mean(),2)
-        
-        Gold = data.loc[(data['kMeans-cat'] == 'gold')]
-        GoldCount = Gold['strength'].count()
-        GoldAvg = round(Gold['strength'].mean(),2)
-        GoldCost = round(Gold['now_cost'].mean(),2)
-
-        Platin = data.loc[(data['kMeans-cat'] == 'platin')]
-        PlatinCount = Platin['strength'].count()
-        PlatinAvg = round(Platin['strength'].mean(),2)
-        PlatinCost = round(Platin['now_cost'].mean(),2)
-
-    else:
-        
-        Bronze = data.loc[(data['pcaKMeans-cat'] == 'bronze')]
-        BronzeCount = Bronze['strength'].count()
-        Bronzev1 = Bronze.loc[(data['strength'] > 0)]
-        BronzeAvg = round(Bronzev1['strength'].mean(),2)
-        BronzeCost = round(Bronzev1['now_cost'].mean(),2)
-
-        Silver = data.loc[(data['pcaKMeans-cat'] == 'silver')]
-        SilverCount = Silver['strength'].count()
-        SilverAvg = round(Silver['strength'].mean(),2)
-        SilverCost = round(Silver['now_cost'].mean(),2)
-        
-        Gold = data.loc[(data['pcaKMeans-cat'] == 'gold')]
-        GoldCount = Gold['strength'].count()
-        GoldAvg = round(Gold['strength'].mean(),2)
-        GoldCost = round(Gold['now_cost'].mean(),2)
-
-        Platin = data.loc[(data['pcaKMeans-cat'] == 'platin')]
-        PlatinCount = Platin['strength'].count()
-        PlatinAvg = round(Platin['strength'].mean(),2)
-        PlatinCost = round(Platin['now_cost'].mean(),2)
-     
-        
-    fig = go.Figure()
-
-    # Add traces
-    fig.add_trace(go.Scatter(x=[BronzeCost], y=[BronzeAvg],
-                        mode='markers',
-                        marker_color='burlywood',
-                        marker_size=[BronzeCount],
-                        name='bronze',
-                        text=[BronzeCount]
-                        ))
-    fig.add_trace(go.Scatter(x=[SilverCost], y=[SilverAvg],
-                    mode='markers',
-                    marker_color='darkgrey',
-                    marker_size=[SilverCount],
-                    name='silver',
-                    text=[SilverCount]
-                    ))
-    
-    fig.add_trace(go.Scatter(x=[GoldCost], y=[GoldAvg],
-                mode='markers',
-                marker_color='darkgoldenrod',
-                marker_size=[GoldCount],
-                name='gold',
-                text=[GoldCount]
-                ))
-
-    fig.add_trace(go.Scatter(x=[PlatinCost], y=[PlatinAvg],
-                mode='markers',
-                marker_color='grey',
-                marker_size=[PlatinCount],
-                name='platin',
-                text=[PlatinCount]
-                ))
-    
-    fig.update_layout(
-    xaxis=dict(autorange=True, title_text='Cost', title_font={"size": 14}, tickfont={"size":10}),
-    yaxis=dict(autorange=True, title_text='Strength', title_font={"size": 14}, tickfont={"size":10}),
-    height=550,
-    width=630,
-    margin=dict(l=0, r=0, b=0,t=0),
-    plot_bgcolor='rgb(255,255,255)',
-    )
-    
-    
-    fig.update_layout(legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=-0.1,
-        xanchor="left",
-        x=-0.04
-    ))
-    
-    
-    return fig
-
-
-@st.cache(allow_output_mutation=True)
-def teamScores(data, teams):   
-    
-    scoresList = []
-    count = len(teams)
-
-    for i in teams:
-        teamlineup = lineup(data, i)
-        teamscore = round(teamStrength(data, i, teamlineup),2)
-        scoresList.append(teamscore)
-        
-    fig = go.Figure()
-
-    # Add traces
-    
-    for i in range(0, count):
-        fig.add_trace(go.Scatter(x=[teams[i]], y=[scoresList[i]],
-                            mode='markers',
-                            marker_color=px.colors.qualitative.Light24[i],
-                            marker_size=[20],
-                            name=teams[i],
-                            ))
-
-    fig.update_layout(
-    xaxis=dict(autorange=True, title_text='Teams', title_font={"size": 14}, tickfont={"size":10}),
-    yaxis=dict(autorange=True, title_text='Strength', title_font={"size": 14}, tickfont={"size":10}),
-    height=550,
-    width=630,
-    margin=dict(l=0, r=0, b=0,t=0),
-    plot_bgcolor='rgb(255,255,255)',
-    )
-    
-   
-    fig.update_layout(legend=dict(
-        title="Teams",
-    ))
-    
-    
-    return fig
-
-
-@st.cache(allow_output_mutation=True)
-def targetTeamScatter(data, targetTeam):   
-    
-    data = data.loc[(data['team'] == targetTeam)]
-    
-            
-    x0 = data['now_cost'].loc[(data['str-cat'] == 'bronze')]
-    x1 = data['now_cost'].loc[(data['str-cat'] == 'silver')]
-    x2 = data['now_cost'].loc[(data['str-cat'] == 'gold')]
-    x3 = data['now_cost'].loc[(data['str-cat'] == 'platin')]
-    
-    y0 = data['strength'].loc[(data['str-cat'] == 'bronze')]
-    y1 = data['strength'].loc[(data['str-cat'] == 'silver')]
-    y2 = data['strength'].loc[(data['str-cat'] == 'gold')]
-    y3 = data['strength'].loc[(data['str-cat'] == 'platin')]
-    
-    d0 = data['description'].loc[(data['str-cat'] == 'bronze')]
-    d1 = data['description'].loc[(data['str-cat'] == 'silver')]
-    d2 = data['description'].loc[(data['str-cat'] == 'gold')]
-    d3 = data['description'].loc[(data['str-cat'] == 'platin')]
-    
-    countBronze = len(x0)
-    countSilver = len(x1)
-    countGold = len(x2)
-    countPlatin = len(x3)
-        
-        
-    fig = go.Figure()
-
-    # Add traces
-    if(countBronze > 0):
-        fig.add_trace(go.Scatter(x=x0, y=y0,
-                            mode='markers',
-                            marker_color='burlywood',
-                            name='bronze',
-                            text=d0))
-    
-    if(countSilver > 0):
-        fig.add_trace(go.Scatter(x=x1, y=y1,
-                        mode='markers',
-                        marker_color='darkgrey',
-                        name='silver',
-                        text=d1))
-    if(countGold > 0):
-        fig.add_trace(go.Scatter(x=x2, y=y2,
-                    mode='markers',
-                    marker_color='darkgoldenrod',
-                    name='gold',
-                    text=d2))
-    if(countPlatin > 0):
-        fig.add_trace(go.Scatter(x=x3, y=y3,
-                    mode='markers',
-                    marker_color='grey',
-                    name='platin',
-                    text=d3))
-    
-    fig.update_layout(
-    xaxis=dict(autorange=True, title_text='Cost', title_font={"size": 14}, tickfont={"size":10}),
-    yaxis=dict(autorange=True, title_text='Strength', title_font={"size": 14}, tickfont={"size":10}),
-    height=230,
-    width=630,
-    margin=dict(l=0, r=0, b=0,t=0),
-    plot_bgcolor='rgb(255,255,255)',
-    )
-    
-    
-    fig.update_layout(legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=-0.25,
-        xanchor="left",
-        x=-0.04
-    ))
-    
-    
-    return fig
-
-
-@st.cache(allow_output_mutation=True)
-def HeadToHeadScatter(data, home, away):   
-     
-    x0 = data['now_cost'].loc[(data['team'] == home)]
-    x1 = data['now_cost'].loc[(data['team'] == away)]
-
-    
-    y0 = data['strength'].loc[(data['team'] == home)]
-    y1 = data['strength'].loc[(data['team'] == away)]
-
-    
-    d0 = data['description'].loc[(data['team'] == home)]
-    d1 = data['description'].loc[(data['team'] == away)]
-
-        
-        
-    fig = go.Figure()
-
-    # Add traces
-    fig.add_trace(go.Scatter(x=x0, y=y0,
-                        mode='markers',
-                        marker_color=px.colors.qualitative.Light24[0],
-                        name=home,
-                        text=d0))
-    
-    fig.add_trace(go.Scatter(x=x1, y=y1,
-                    mode='markers',
-                    marker_color=px.colors.qualitative.Light24[13],
-                    name=away,
-                    text=d1))
-
-    
-    fig.update_layout(
-    xaxis=dict(autorange=True, title_text='Cost', title_font={"size": 14}, tickfont={"size":10}),
-    yaxis=dict(autorange=True, title_text='Strength', title_font={"size": 14}, tickfont={"size":10}),
-    height=230,
-    width=630,
-    margin=dict(l=0, r=0, b=0,t=0),
-    plot_bgcolor='rgb(255,255,255)',
-    )
-    
-    
-    fig.update_layout(legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=-0.25,
-        xanchor="left",
-        x=-0.04
-    ))
-    
-    
-    return fig
-
-
 ######  Show table with target team statistics and Graph   ##########################################################################################
+#####  with targetTeam:
+    
 st.markdown("<h3 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Team Analysis<b></h3>", unsafe_allow_html=True)
 
 colx, coly, colz = st.columns([1, 1, 1])
@@ -1209,22 +727,15 @@ colw.plotly_chart(val[1], use_container_width=True)
 
 tarTeam
 
-
-
-teamScatter = targetTeamScatter(elements, targTeam)
-
 filter = filterElements(elements, tTeam)
 playerStats = playerTables(filter)
 
 playerNames = filterNames(elements, tTeam)
 
-display = st.checkbox("Show "+targTeam+" Player Stats")
+display = st.checkbox('Show Player Stats')
 
 if display:
-    st.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>"+targTeam+" Players Scatter Plot<b></h3>", unsafe_allow_html=True)
-    st.write(teamScatter)
-    st.markdown(" ")
-    st.markdown("<h4 style='text-align: left; color: #872657; padding-left: 0px; font-size: 20px'><b>Players Analysis<b></h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align: left; color: #872657; padding-left: 0px; font-size: 30px'><b>Player Analysis<b></h4>", unsafe_allow_html=True)
     st.write(playerStats)
     name = st.selectbox('Detailed Player Statistics', playerNames, index=0)
     playerGames = filterPlayer(history, name)
@@ -1233,20 +744,14 @@ if display:
 
 
 ######  Show table with team comparison statistics and Graphs with Head to Head Section   ############################################################
-st.markdown(" ")
-st.markdown(" ")
+######with dataView:
+       
 st.markdown("<h3 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Team Comparison<b></h3>", unsafe_allow_html=True)
 
 colx, coly = st.columns([1, 1])
     
-home = colx.selectbox('Home Team', teams, index=13)
-away= coly.selectbox('Away Team', teams, index=11)
-
-homelogo = 'football_logo/'+home+'.png'
-awaylogo = 'football_logo/'+away+'.png'
-
-homeImage = Image.open(homelogo)
-awayImage = Image.open(awaylogo)
+home = colx.selectbox('Team 1', teams, index=13)
+away= coly.selectbox('Team 2', teams, index=11)
 
 teama = home
 teamb = away
@@ -1285,7 +790,8 @@ colu, colv = st.columns([1,1])
 cols.plotly_chart(val1[1], use_container_width=True)
 colt.plotly_chart(val2[1], use_container_width=True)
 
-st.markdown("<h4 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Head-to-Head<b></h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='text-align: left; color: #872657; padding-left: 0px; font-size: 30px'><b>Head-to-Head<b></h4>", unsafe_allow_html=True)
+
 test = tables(head2head_merged,games,teama) 
 
 coli, colo = st.columns([1,1])
@@ -1294,43 +800,28 @@ coli.plotly_chart(test2[0], use_container_width=True)
 colo.plotly_chart(test2[1], use_container_width=True)
 
 test
-
-
-headToheadScatter = HeadToHeadScatter(elements, home, away)
-
-displayHeadToHead = st.checkbox('Show '+home+" versus "+away+" Players Distribution")
-
-if displayHeadToHead:
-    st.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>"+home+" versus "+away+" Players Scatter Plot<b></h3>", unsafe_allow_html=True)
-    st.write(headToheadScatter)
     
-   
+###################################################################################################################################################
+    
 homeFPL = teamFpl(elements, home)
 awayFPL = teamFpl(elements, away)
 
 home_names = homeFPL['web_name'].values
 away_names = awayFPL['web_name'].values
 
-
 homeline0 = lineup(elements, home)
 awayline0 = lineup(elements, away)
 
-
 Image.open('football_logo/football_logo.jpg')
 
-
-soccerImage = Image.open('football_logo/preview3.png')
+soccerImage = Image.open('football_logo/football_logo1.png')
 st.sidebar.image(soccerImage, width=200)
-
-
 st.sidebar.markdown("<h3 style='text-align: left; color: #872657; padding-left: 0px; font-size: 30px'><b>Team Lineups<b></h3>", unsafe_allow_html=True)
 st.sidebar.markdown(' ')
-st.sidebar.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>"+home+" - Home Team<b></h3>", unsafe_allow_html=True)
-st.sidebar.image(homeImage, width=200)
+
 homeline = st.sidebar.multiselect(home+' Starting XI', home_names, default=homeline0)
 homeCount = len(homeline)
 homescore = round(teamStrength(elements, home, homeline),2)
-
 
 st.sidebar.markdown("<h3 style='text-align: left; color: purple; padding-left: 0px; font-size: 20px'><b>Team Strength - "+str(homescore)+" | Players - "+str(homeCount)+"<b></h3>", unsafe_allow_html=True)
 
@@ -1342,15 +833,9 @@ displayhome = st.sidebar.checkbox("Show "+home+" Players")
 if displayhome:
     st.sidebar.plotly_chart(homeline)
 
-
-st.sidebar.markdown(" ")
-st.sidebar.markdown(" ")
-st.sidebar.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>"+away+" - Away Team<b></h3>", unsafe_allow_html=True)
-st.sidebar.image(awayImage, width=200)
 awayline = st.sidebar.multiselect(away+' Starting XI', away_names, default=awayline0)
 awayCount = len(awayline)
 awayscore = round(teamStrength(elements, away, awayline),2)
-
 
 st.sidebar.markdown("<h3 style='text-align: left; color: purple; padding-left: 0px; font-size: 20px'><b>Team Strength - "+str(awayscore)+" | Players - "+str(awayCount)+"<b></h3>", unsafe_allow_html=True)
 
@@ -1361,102 +846,31 @@ displayaway = st.sidebar.checkbox("Show "+away+" Players")
 if displayaway:
     st.sidebar.plotly_chart(awayline)
   
-    
-    
-categories = ['platin', 'gold', 'silver', 'bronze']
+###############################################################################################################################################
+premier, match = st.columns([1,4.5])
 
-models = ['zScore', 'kMeans', 'pcaKMeans']
-
-
-st.markdown(" ")
-st.markdown(" ")
-
-
-st.markdown("<h3 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Team Scores<b></h3>", unsafe_allow_html=True)
-
-allTeamScores = teamScores(elements, teams)
-
-st.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>All Team Scores<b></h3>", unsafe_allow_html=True)
-st.write(allTeamScores)
-
-
-st.markdown(" ")
-st.markdown(" ")
-st.markdown("<h3 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Player Rankings<b></h3>", unsafe_allow_html=True)
-modcol, catcol = st.columns([1,1])
-
-model = modcol.selectbox('Model', models, index=0)
-
-cati = catcol.selectbox('Category', categories, index=0)
-
-if (cati == 'platin'):
-    colors = 'grey'
-    catName = 'Platinum'
-elif (cati == 'gold'):
-    colors = 'darkgoldenrod'
-    catName = 'Gold'
-elif (cati == 'silver'):
-    colors = 'darkgrey'
-    catName = 'Silver'
-else:
-    colors='burlywood'
-    catName = 'Bronze'
-
-playerCategory = playerRank(elements, cati, model)
-playerRanking = playerRankTables(playerCategory)
-playerscatter = playerScatter(playerCategory)
+image = Image.open('football_logo/football_logo.jpg')
+premier.image(image, use_column_width=True)
 
 st.markdown(" ")
 st.markdown(" ")
 
-st.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>"+catName+" Players Scatter Plot<b></h3>", unsafe_allow_html=True)
-st.write(playerscatter)
+match.markdown("<h4 style='text-align: left; color: purple; padding-left: 0px; font-size: 40px'><b>Simulate Match<b></h4>", unsafe_allow_html=True)
 
-st.markdown(" ")
-st.markdown(" ")
+homelogo = 'football_logo/'+home+'.png'
+awaylogo = 'football_logo/'+away+'.png'
 
-playerscatterAll = playerScatterAll(elements, model)
-    
-    
-displayPlayers = st.checkbox('Show Players in Class')
-
-if displayPlayers:
-
-    st.markdown("<h3 style='text-align: left; color: #872657; padding-left: 0px; font-size: 20px'><b>"+catName+" Players Details<b></h3>", unsafe_allow_html=True)
-    st.write(playerRanking)
-
-displayAllPlayers = st.checkbox('Show All Players Scatter Plot')  
-avgCategory = averageScatter(elements, model)  
-    
-if displayAllPlayers:
-    st.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b> All Players Scatter Plot<b></h3>", unsafe_allow_html=True)
-    st.write(playerscatterAll)
-    st.markdown(" ")
-    st.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>Average Category Scores<b></h3>", unsafe_allow_html=True)
-    st.write(avgCategory)
-    
-
-st.markdown(" ")      
-st.markdown(" ")
-st.markdown(" ")
-premier, match = st.columns([1,6])
-
-image3 = Image.open('football_logo/preview1.png')
-premier.image(image3, use_column_width=True)
-
-match.markdown("<h4 style='text-align: left; color: #551A8B; padding-left: 0px; font-size: 50px'><b>Simulate Match<b></h4>", unsafe_allow_html=True)
+homeImage = Image.open(homelogo)
+awayImage = Image.open(awaylogo)
 
 
 colq, colp = st.columns([1,1])
 
-
 colq.image(homeImage, width=200)
-
-colq.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>"+home+": Team Strength - "+str(homescore)+"<b></h3>", unsafe_allow_html=True)
+colq.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>Team Strength - "+str(homescore)+"<b></h3>", unsafe_allow_html=True)
 
 colp.image(awayImage, width=200)
-
-colp.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>"+away+": Team Strength - "+str(awayscore)+"<b></h3>", unsafe_allow_html=True)
+colp.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>Team Strength - "+str(awayscore)+"<b></h3>", unsafe_allow_html=True)
 
 xgHome0= colq.number_input(home+' (Home Adjustment)', min_value=-5.0, max_value=5.0, step=0.1, value=0.0)
 xgAway0= colp.number_input(away+' (Away Adjustment)', min_value=-5.0, max_value=5.0, step=0.1, value=0.0)
@@ -1466,6 +880,7 @@ xgAway = awayscore + xgAway0
 
 proby = matchProb(xgHome, xgAway)
 
+
 proHome = '{:.2%}'.format(round(proby[0],4))
 proDraw = '{:.2%}'.format(round(proby[1],4))
 proAway = '{:.2%}'.format(round(proby[2],4))
@@ -1474,17 +889,13 @@ oddHome = round(1/proby[0],2)
 oddDraw = round(1/proby[1],2)
 oddAway = round(1/proby[2],2)  
 
-st.markdown(" ")
-st.markdown(" ")
 
-forecast, odds = st.columns([1,6])
-
-image10 = Image.open('football_logo/football_logo.jpg')
-forecast.image(image10, use_column_width=True)
-odds.markdown("<h3 style='text-align: left; color: #551A8B; padding-left: 0px; font-size: 30px'><b>Match Probability (Fair Odds)<b></h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: left; color: #551A8B; padding-left: 0px; font-size: 30px'><b>Match Probability (Fair Odds)<b></h3>", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([1,1,1])
 
 col1.markdown("<h3 style='text-align: left; color: #872657; padding-left: 0px; font-size: 20px'><b>HomeWin - "+str(proHome)+" ("+str(oddHome)+")<b></h3>", unsafe_allow_html=True)
 col2.markdown("<h3 style='text-align: left; color: #872657; padding-left: 0px; font-size: 20px'><b>Draw - "+str(proDraw)+" ("+str(oddDraw)+")<b></h3>", unsafe_allow_html=True)
 col3.markdown("<h3 style='text-align: left; color: #872657; padding-left: 0px; font-size: 20px'><b>AwayWin - "+str(proAway)+" ("+str(oddAway)+")<b></h3>", unsafe_allow_html=True)
+    
+###############################################################################################################################################
