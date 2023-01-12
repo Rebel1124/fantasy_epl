@@ -1379,6 +1379,14 @@ allTeamScores = teamScores(elements, teams)
 st.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>All Team Scores<b></h3>", unsafe_allow_html=True)
 st.write(allTeamScores)
 
+dreamteam = Image.open('football_logo/DreamTeam.png')
+
+displayDreamTeam = st.checkbox('Show Dream Team')
+
+if displayDreamTeam:
+    st.markdown("<h3 style='text-align: left; color: #008080; padding-left: 0px; font-size: 20px'><b>GW20 Dream Team<b></h3>", unsafe_allow_html=True)
+    st.image(dreamteam, width=475)
+    
 
 st.markdown(" ")
 st.markdown(" ")
